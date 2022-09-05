@@ -1,4 +1,4 @@
-# Components-Mongo
+# Environmental Toolkit
 
 for the ODALA project.
 
