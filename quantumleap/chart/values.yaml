@@ -8,7 +8,7 @@ quantumleap:
 
   init:
     enabled: false
-    passwordSecret: quantumleap-password
+    passwordSecret: postgres-password
     image:
       # -- Container image to deploy
       repository: quay.io/fiware/quantumleap-pg-init
@@ -93,5 +93,5 @@ quantumleap:
     # -- Caching can be disabled by setting the host to empty
     redisHost:
   runtime:
-    logLevel: "WARNING"
+    logLevel: "DEBUG"
     defaultDb: timescale
