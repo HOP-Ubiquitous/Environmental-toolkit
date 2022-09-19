@@ -42,6 +42,8 @@ $ helm install grafana grafana/chart/
 - Mejorar documentación
 - Probar tests
 - Encontrar mejor solución para Quantumleap → init-container with code 64
+- Crear un usuario grafana para la base de datos de Quantumleap 
+- Despliegue mediante Gitlab CI/CD
 
 ## License
 

@@ -21,26 +21,20 @@ grafana:
     - grafana-simple-json-datasource
     - yesoreyeram-infinity-datasource
   rbac:
-    create: false
     pspEnabled: false
     namespaced: true
   securityContext: ""
-  serviceAccount:
-    create: true
-    name: odala-developer
 
   sidecar:
     dashboards:
-      #      enabled: true
-      enabled: false
-      #      SCProvider: true
-      SCProvider: false
+      enabled: true
+      SCProvider: true
       label: grafana_dashboard
       labelValue: grafana
       orgid: 1
-      defaultFolderName: default
+      defaultFolderName: dashboards
     datasources:
-      enabled: false
+      enabled: true
       label: grafana_datasource
       labelValue: grafana
     resources:
@@ -50,18 +44,18 @@ grafana:
       requests:
         cpu: 10m
         memory: 10Mi
-  #  dashboardProviders:
-  #    dashboardproviders.yaml:
-  #      apiVersion: 1
-  #      providers:
-  #        - name: 'dashboards'
-  #          orgId: 1
-  #          folder: 'Dashboards'
-  #          type: file
-  #          disableDeletion: true
-  #          editable: false
-  #          options:
-  #            path: /tmp/dashboards/dashboards  # should match sidecar.dashboards.defaultFolderName
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'dashboards'
+            orgId: 1
+            folder: 'Dashboards'
+            type: file
+            disableDeletion: true
+            editable: false
+            options:
+              path: /tmp/dashboards/dashboards  # should match sidecar.dashboards.defaultFolderName
   #        - name: 'air-quality'
   #          orgId: 1
   #          folder: 'Air Quality'
@@ -102,25 +96,25 @@ grafana:
 
 admin:
   secured: false
-  username: fiwareAdmin
-  password: fiwareAdmin
+  username: odalaAdmin
+  password: odalaAdmin
 
 route:
   # -- To enable the OpenShift route
   enabled: false
 
 datasources:
-  enabled: false
+  enabled: true
   timescale:
     # -- Timescale URL
-    url: tsdb
+    url: timescaledb.database.svc.cluster.local
     # -- Timescale database name
-    database: postgres
+    database: quantumleap
     credentials:
       # -- Timescale database username
-      username: postgres
+      username: quantumleap
       # -- Timescale database password
-      password: test
+      password: t2gyp8G8wKW9seQhBILy
 
 tests:
   enabled: false
