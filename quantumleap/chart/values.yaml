@@ -93,5 +93,5 @@ quantumleap:
     # -- Caching can be disabled by setting the host to empty
     redisHost:
   runtime:
-    logLevel: "DEBUG"
+    logLevel: "INFO"
     defaultDb: timescale
