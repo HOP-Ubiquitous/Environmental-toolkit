@@ -6,6 +6,8 @@
   stage: deploy
   script:
     - echo "$KUBE" > config
+    - QUANTUMLEAP_PASSWORD=$(kubectl get secrets/quantumleap-password --template={{.data.password}} --namespace ${NAMESPACE} --kubeconfig config | base64 -d)
+    - sed -i "s~+quantumleap_password+~${QUANTUMLEAP_PASSWORD}~g" ./grafana/chart/values.yaml
     # Apply helm chart into kubernetes with helm command
     - helm dependency up quantumleap/chart/
     - helm upgrade quantumleap quantumleap/chart/ --install --namespace ${NAMESPACE} --kubeconfig config

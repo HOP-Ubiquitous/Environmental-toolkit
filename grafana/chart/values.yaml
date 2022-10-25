@@ -124,7 +124,7 @@ datasources:
       # -- Timescale database username
       username: quantumleap
       # -- Timescale database password
-      password: t2gyp8G8wKW9seQhBILy
+      password: +quantumleap_password+
 
 tests:
   enabled: false
