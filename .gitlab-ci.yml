@@ -1,0 +1,42 @@
+# Deployment script
+
+.deploy_template: &deploy_template
+
+  image: dtzar/helm-kubectl
+  stage: deploy
+  script:
+    - echo "$KUBE" > config
+    - QUANTUMLEAP_PASSWORD=$(kubectl get secrets/quantumleap-password --template={{.data.password}} --namespace ${NAMESPACE} --kubeconfig config | base64 -d)
+    - sed -i "s~+quantumleap_password+~${QUANTUMLEAP_PASSWORD}~g" ./grafana/chart/values.yaml
+    # Apply helm chart into kubernetes with helm command
+    - helm dependency up quantumleap/chart/
+    - helm upgrade quantumleap quantumleap/chart/ --install --namespace ${NAMESPACE} --kubeconfig config
+    - helm upgrade air-quality-app air-quality-app/chart/ --install --namespace ${NAMESPACE} --kubeconfig config
+    - helm dependency up grafana/chart/
+    - helm upgrade grafana grafana/chart/ --install --namespace ${NAMESPACE} --kubeconfig config
+
+# Stages
+
+stages:
+  - deploy
+
+# Staging deployment stage
+
+do deploy staging:
+  <<: *deploy_template
+  variables:
+    NAMESPACE: odala-staging
+    KUBE: $KUBECONFIG
+  only:
+    - /^odala-staging./
+
+# Production deployment stage
+
+do deploy prod:
+  <<: *deploy_template
+  variables:
+    NAMESPACE: odala-production
+    KUBE: $KUBECONFIG
+  only:
+    - odala-production
+  when: manual

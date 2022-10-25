@@ -1,0 +1,130 @@
+nameOverride: "grafana"
+grafana:
+  admin:
+    existingSecret: "grafana-admin-user"
+    userKey: admin-user
+    passwordKey: admin-password
+  grafana.ini:
+    log:
+      level: warn
+    log.console:
+      format: json
+    plugins:
+      allow_loading_unsigned_plugins: orion-datasource
+    users:
+      default_theme: light # dark | light
+    auth.anonymous:
+      enabled: false
+    dashboards:
+      default_home_dashboard_path: /tmp/dashboards/air-quality/home.json
+  initChownData:
+    enabled: false
+  persistence:
+    enabled: false
+  plugins:
+    - grafana-simple-json-datasource
+    - yesoreyeram-infinity-datasource
+    - https://github.com/HOP-Ubiquitous/orion-datasource/releases/download/1.0.0/orion-datasource.zip;orion-datasource
+  rbac:
+    pspEnabled: false
+    namespaced: true
+  securityContext: ""
+
+  sidecar:
+    dashboards:
+      enabled: true
+      SCProvider: true
+      label: grafana_dashboard
+      labelValue: grafana
+      orgid: 1
+#      defaultFolderName: dashboards
+      provider:
+        foldersFromFilesStructure: true
+    datasources:
+      enabled: true
+      label: grafana_datasource
+      labelValue: grafana
+    resources:
+      limits:
+        cpu: 1
+        memory: 1Gi
+      requests:
+        cpu: 10m
+        memory: 10Mi
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'dashboards'
+            orgId: 1
+            folder: 'Dashboards'
+            type: file
+            disableDeletion: true
+            editable: false
+            options:
+              path: /tmp/dashboards/dashboards  # should match sidecar.dashboards.defaultFolderName
+          - name: 'air-quality'
+            orgId: 1
+            folder: 'Air Quality'
+            type: file
+            disableDeletion: true
+            editable: false
+            options:
+              path: /tmp/dashboards/air-quality  # should match sidecar.dashboards.defaultFolderName
+
+  podLabels:
+    odala/platform: fiware
+    odala/component: visualization
+    odala/subcomponent: ui
+    odala/product: grafana
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+  env:
+    GF_PANELS_DISABLE_SANITIZE_HTML: true
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.staging.odala.kiel.de
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/proxy-buffer-size: 8k
+      nginx.ingress.kubernetes.io/use-geoip: "false"
+      nginx.ingress.kubernetes.io/use-geoip2: "true"
+
+admin:
+  secured: false
+  username: odalaAdmin
+  password: odalaAdmin
+
+route:
+  # -- To enable the OpenShift route
+  enabled: false
+
+datasources:
+  enabled: true
+  orion:
+    # -- Orion URL
+    url: "http://scorpioservice.odala-staging.svc.cluster.local:9090"
+  timescale:
+    # -- Timescale URL
+    url: timescaledb.database.svc.cluster.local
+    # -- Timescale database name
+    database: quantumleap
+    credentials:
+      # -- Timescale database username
+      username: quantumleap
+      # -- Timescale database password
+      password: +quantumleap_password+
+
+tests:
+  enabled: false
