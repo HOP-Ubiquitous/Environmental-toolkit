@@ -1,0 +1,42 @@
+# Deployment script
+
+.deploy_template: &deploy_template
+
+  image: dtzar/helm-kubectl
+  stage: deploy
+  script:
+    - echo "$KUBE" > config
+    # Cleanup resources: temporary solution until check upgrade the existing helm installation works
+    - helm uninstall quantumleap --namespace ${NAMESPACE} --kubeconfig config
+    - helm uninstall air-quality-app --namespace ${NAMESPACE} --kubeconfig config
+    - helm uninstall grafana --namespace ${NAMESPACE} --kubeconfig config
+    # Apply helm chart into kubernetes with helm command
+    - helm install quantumleap quantumleap/chart/ --namespace ${NAMESPACE} --kubeconfig config
+    - helm install air-quality-app air-quality-app/chart/ --namespace ${NAMESPACE} --kubeconfig config
+    - helm install grafana grafana/chart/ --namespace ${NAMESPACE} --kubeconfig config
+
+# Stages
+
+stages:
+  - deploy
+
+# Staging deployment stage
+
+do deploy staging:
+  <<: *deploy_template
+  variables:
+    NAMESPACE: odala-staging
+    KUBE: $KUBECONFIG
+  only:
+    - /^odala-staging./
+
+# Production deployment stage
+
+do deploy prod:
+  <<: *deploy_template
+  variables:
+    NAMESPACE: odala-production
+    KUBE: $KUBECONFIG
+  only:
+    - odala-production
+  when: manual
