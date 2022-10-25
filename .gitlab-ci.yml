@@ -11,8 +11,10 @@
     - helm uninstall air-quality-app --namespace ${NAMESPACE} --kubeconfig config
     - helm uninstall grafana --namespace ${NAMESPACE} --kubeconfig config
     # Apply helm chart into kubernetes with helm command
+    - helm dependency up quantumleap/chart/
     - helm install quantumleap quantumleap/chart/ --namespace ${NAMESPACE} --kubeconfig config
     - helm install air-quality-app air-quality-app/chart/ --namespace ${NAMESPACE} --kubeconfig config
+    - helm dependency up grafana/chart/
     - helm install grafana grafana/chart/ --namespace ${NAMESPACE} --kubeconfig config
 
 # Stages
