@@ -102,7 +102,7 @@ $ helm install grafana grafana/chart/
 
 ## TODO
 
-- Despliegue mediante Gitlab CI/CD
+- Deploy through Gitlab CI/CD
 
 ## License
 
