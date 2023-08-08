@@ -62,7 +62,7 @@
       },
       "id": 24,
       "options": {
-        "content": "**Dispositivo seleccionado:** $device_name\n",
+        "content": "**Selected device:** $device_name\n",
         "mode": "markdown"
       },
       "pluginVersion": "8.5.2",
